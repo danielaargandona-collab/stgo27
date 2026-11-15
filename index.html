@@ -1,0 +1,599 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Maratón Santiago 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+
+<style>
+/* ── Paleta heat clara: fondo crema, acentos magenta→naranja ── */
+:root {
+  --fire-a:   #E8005A;
+  --fire-b:   #FF4D00;
+  --fire-c:   #FF9500;
+  --green:    #16A34A;
+  --bg:       #FAF9F7;
+  --bg-card:  #FFFFFF;
+  --fg:       #1A1814;
+  --fg-2:     #4A4840;
+  --fg-3:     #9A9890;
+  --border:   #E8E6E0;
+  --border-2: #D4D2CC;
+  color-scheme: light;
+}
+body { background: var(--bg); color: var(--fg); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  min-height: 100%;
+  padding-left: max(16px, env(safe-area-inset-left,0px));
+  padding-right: max(16px, env(safe-area-inset-right,0px));
+  padding-block: 20px;
+}
+
+#root { max-width: 760px; margin: 0 auto; }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  background: #FFF5F0;
+  border: 1px solid #FFCDB8;
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 10% 10%, rgba(232,0,90,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 92% 80%, rgba(255,77,0,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 40% at 50% 115%, rgba(255,149,0,0.16) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  padding: 20px 22px 18px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px; flex-wrap: wrap;
+}
+.hero-title {
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.4px; line-height: 1.1;
+  color: var(--fg);
+  text-wrap: balance;
+}
+.hero-sub {
+  font-size: 12px; color: var(--fg-3);
+  margin-top: 4px;
+}
+.countdown-pill {
+  background: linear-gradient(135deg, var(--fire-a), var(--fire-b));
+  border-radius: 10px; padding: 8px 16px;
+  text-align: center; min-width: 76px;
+}
+.countdown-num {
+  font-size: 24px; font-weight: 700; color: #fff; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.countdown-lbl {
+  font-size: 10px; color: rgba(255,255,255,0.85);
+  margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* ── STAT TILES ── */
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile {
+  border-radius: 10px; padding: 12px 14px; min-height: 76px;
+  display: flex; flex-direction: column; gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+.tile-icon { font-size: 17px; margin-bottom: 2px; }
+.tile-val {
+  font-size: 16px; font-weight: 700;
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.tile-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { display: flex; flex-direction: column; gap: 6px; }
+.progress-label { display: flex; justify-content: space-between; align-items: center; }
+.progress-label span:first-child { font-size: 12px; color: var(--fg-2); font-weight: 500; }
+.progress-label span:last-child {
+  font-size: 12px; font-weight: 700; color: var(--fire-b);
+  font-variant-numeric: tabular-nums;
+}
+.progress-track {
+  height: 7px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 0.4s ease;
+  background: linear-gradient(90deg, var(--fire-a), var(--fire-b), var(--fire-c));
+}
+
+/* ── WEEK SELECTOR ── */
+.week-selector { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px; }
+.week-btn {
+  padding: 5px 9px; border-radius: 7px;
+  font-size: 12px; font-family: 'DM Mono', monospace;
+  cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--fg-3);
+}
+.week-btn.active {
+  border: 2px solid var(--fire-b);
+  background: #FFF0E8;
+  color: var(--fire-b); font-weight: 600;
+}
+.week-btn.done {
+  background: #ECFDF5;
+  border-color: #6EE7B7;
+  color: var(--green);
+}
+.week-btn.current { font-weight: 700; }
+
+/* ── WEEK PROGRESS ROW ── */
+.week-progress {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+}
+.week-progress-label { white-space: nowrap; }
+.week-progress-label .wk { font-size: 13px; font-weight: 700; }
+.week-progress-label .wr { font-size: 11px; color: var(--fg-3); margin-left: 6px; }
+.week-progress-track {
+  flex: 1; height: 7px;
+  background: var(--border); border-radius: 4px; overflow: hidden;
+}
+.week-progress-pct {
+  font-size: 13px; font-weight: 700;
+  min-width: 44px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── DAY GRID ── */
+.day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day-col {
+  min-height: 90px; border-radius: 10px; padding: 8px 6px;
+  display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: border 0.15s, background 0.15s;
+}
+.day-col.done { background: #ECFDF5; border-color: #6EE7B7; }
+.day-col.drag-over { border: 2px dashed var(--fire-b) !important; background: #FFF0E8 !important; }
+.day-head { text-align: center; margin-bottom: 2px; }
+.day-name { font-size: 11px; font-weight: 600; color: var(--fg-2); }
+.day-name.done { color: var(--green); }
+.day-date { font-size: 10px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+
+/* ── TASK CARDS ── */
+.task {
+  border-radius: 7px; padding: 5px 7px;
+  font-size: 11px; font-weight: 500;
+  user-select: none; cursor: grab;
+  transition: opacity 0.15s;
+  display: flex; flex-direction: column; gap: 2px;
+  border: 1px solid transparent;
+}
+.task:active { cursor: grabbing; }
+.task-top { display: flex; align-items: center; justify-content: space-between; gap: 3px; }
+.task-icon { font-size: 13px; }
+.task-status { font-size: 12px; cursor: pointer; width: 18px; text-align: center; display: inline-block; line-height: 1; }
+.task-body { display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; }
+.task-label { font-size: 11px; line-height: 1.3; word-break: break-word; cursor: text; flex: 1; }
+.task-label.missed { text-decoration: line-through; opacity: 0.65; }
+.task-del { font-size: 11px; opacity: 0.3; cursor: pointer; line-height: 1.3; flex-shrink: 0; transition: opacity 0.15s; }
+.task-del:hover { opacity: 0.7; }
+.task input {
+  font-size: 11px; border: none;
+  border-bottom: 1px solid var(--fire-b);
+  background: transparent; outline: none;
+  width: 100%; color: inherit;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── ADD BUTTON ── */
+.add-btn {
+  margin-top: 2px; padding: 3px 0; width: 100%;
+  border: 1px dashed var(--border-2);
+  border-radius: 6px; background: transparent;
+  color: var(--fg-3); font-size: 14px;
+  cursor: pointer; transition: all 0.15s;
+}
+.add-btn:hover { border-color: var(--fire-b); color: var(--fire-b); }
+
+/* ── FOOTER ── */
+.footer-legend { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.legend-item { font-size: 11px; color: var(--fg-3); display: flex; align-items: center; gap: 3px; }
+.footer-hint { font-size: 11px; color: var(--fg-3); margin-top: 6px; }
+.footer-status { font-size: 11px; height: 18px; margin-top: 4px; }
+
+@media (max-width: 540px) {
+  .hero-title { font-size: 18px; }
+  .tile-val { font-size: 14px; }
+  .day-grid { gap: 3px; }
+  .day-col { padding: 5px 3px; }
+  .day-name, .task-label { font-size: 10px; }
+}
+</style>
+
+<div id="root"></div>
+
+<script>
+const { useState, useEffect, useRef } = React;
+const h = React.createElement;
+
+/* ── Supabase ── */
+const SB_URL = "https://ssrvbprgkwaoxzrvpwym.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzcnZicHJna3dhb3h6cnZwd3ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTYzNzAsImV4cCI6MjA5NDk3MjM3MH0.NMfB1mJRJEdBRqynYR4aBq1non82o9htoIi2jKeHsf4";
+async function dbGet(key) {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/tracker?key=eq.${key}&select=value`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
+    const d = await r.json();
+    return d && d[0] ? JSON.parse(d[0].value) : null;
+  } catch { return null; }
+}
+async function dbSet(key, value) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/tracker`, { method: "POST", headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({ key, value: JSON.stringify(value) }) });
+  } catch {}
+}
+
+/* ── Config ── */
+const PLAN_START   = new Date(2026, 11, 1);
+const RACE_DATE    = new Date(2027,  4, 16);
+const TOTAL_WEEKS  = 18;
+const CURRENT_WEEK = 1;
+
+/* ── Type config (heat palette — fondo claro) ── */
+const TC = {
+  run:      { bg:"#EEF2FF", cl:"#3730A3", bo:"#A5B4FC", ic:"🏃", lbl:"Correr" },
+  pace:     { bg:"#FFF3E0", cl:"#C2410C", bo:"#FDBA74", ic:"⚡", lbl:"Pace" },
+  cross:    { bg:"#FFFBEB", cl:"#92400E", bo:"#FCD34D", ic:"🚴", lbl:"Cross" },
+  strength: { bg:"#FFF0F5", cl:"#9D174D", bo:"#FDA4AF", ic:"🏋️", lbl:"Fuerza" },
+  pilates:  { bg:"#F5F3FF", cl:"#6D28D9", bo:"#C4B5FD", ic:"🧘", lbl:"Pilates" },
+  rest:     { bg:"#F9FAFB", cl:"#6B7280", bo:"#E5E7EB", ic:"💤", lbl:"Descanso" },
+  recover:  { bg:"#FFF3E0", cl:"#C2410C", bo:"#FDBA74", ic:"🩹", lbl:"Recover" },
+  half:     { bg:"#EFF6FF", cl:"#1D4ED8", bo:"#93C5FD", ic:"🏅", lbl:"Media Maratón" },
+  marathon: { bg:"#ECFDF5", cl:"#065F46", bo:"#6EE7B7", ic:"🏆", lbl:"Maratón" },
+};
+
+/* ── Plan Novice 2 raw (desde PDF) ── */
+const RAW = [
+  { tue:4.8,  wed:[8.1,"pace"],  thu:4.8,  sat:12.9 },
+  { tue:4.8,  wed:[8.1,"run"],   thu:4.8,  sat:14.5 },
+  { tue:4.8,  wed:[8.1,"pace"],  thu:4.8,  sat:9.7  },
+  { tue:4.8,  wed:[9.7,"pace"],  thu:4.8,  sat:17.7 },
+  { tue:4.8,  wed:[9.7,"run"],   thu:4.8,  sat:19.3 },
+  { tue:4.8,  wed:[9.7,"pace"],  thu:4.8,  sat:14.5 },
+  { tue:6.4,  wed:[11.3,"pace"], thu:6.4,  sat:22.5 },
+  { tue:6.4,  wed:[11.3,"run"],  thu:6.4,  sat:24.1 },
+  { tue:6.4,  wed:[11.3,"pace"], thu:6.4,  sat:null, sun:"half" },
+  { tue:6.4,  wed:[12.9,"pace"], thu:6.4,  sat:27.4 },
+  { tue:8.1,  wed:[12.9,"run"],  thu:8.1,  sat:29   },
+  { tue:8.1,  wed:[12.9,"pace"], thu:8.1,  sat:21   },
+  { tue:8.1,  wed:[8.1,"pace"],  thu:8.1,  sat:30.6 },
+  { tue:8.1,  wed:[12.9,"run"],  thu:8.1,  sat:19.3 },
+  { tue:8.1,  wed:[8.1,"pace"],  thu:8.1,  sat:32.2 },
+  { tue:8.1,  wed:[6.4,"pace"],  thu:8.1,  sat:19.3 },
+  { tue:6.4,  wed:[4.8,"run"],   thu:6.4,  sat:12.9 },
+  { tue:4.8,  wed:[3.2,"run"],   thu:null, sat:3.2,  sun:"marathon" },
+];
+
+function adj(d) {
+  if (!d) return null;
+  const f = d % 1;
+  if (f === 0) return d;
+  if (f < 0.4) return Math.floor(d);
+  if (f <= 0.45) return Math.floor(d) + 0.5;
+  return Math.ceil(d);
+}
+
+function mk(id, type, label) { return { id, type, label }; }
+
+function buildWeek(wi) {
+  const r = RAW[wi];
+  return [
+    [mk(`w${wi}d0r`, "rest", "Descanso")],
+    [mk(`w${wi}d1p`, "pilates", "Pilates"), ...(r.tue ? [mk(`w${wi}d1r`, "run", `Correr ${adj(r.tue)} km`)] : [])],
+    [mk(`w${wi}d2s`, "strength", "Fuerza"), ...(r.wed ? [mk(`w${wi}d2`, r.wed[1], r.wed[1]==="pace" ? `${adj(r.wed[0])} km pace` : `Correr ${adj(r.wed[0])} km`)] : [])],
+    r.thu ? [mk(`w${wi}d3r`, "run", `Correr ${adj(r.thu)} km`)] : [mk(`w${wi}d3rest`, "rest", "Descanso")],
+    [mk(`w${wi}d4p`, "pilates", "Pilates"), mk(`w${wi}d4c`, "cross", "Cross-training")],
+    r.sun === "half" ? [mk(`w${wi}d5rest`, "rest", "Descanso")] : [mk(`w${wi}d5s`, "strength", "Fuerza")],
+    r.sun === "half"     ? [mk(`w${wi}d6h`, "half",     "Media Maratón")] :
+    r.sun === "marathon" ? [mk(`w${wi}d6m`, "marathon", "¡Maratón Santiago!")] :
+    r.sat                ? [mk(`w${wi}d6l`, "run",      `Correr ${adj(r.sat)} km`)] : [],
+  ];
+}
+
+const INITIAL_PLAN = Array.from({ length: TOTAL_WEEKS }, (_, wi) => buildWeek(wi));
+const DAYS = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+function inferType(label) {
+  const l = label.toLowerCase();
+  if (/recover|recupera|lesion/.test(l)) return "recover";
+  if (/pace|ritmo|tempo/.test(l)) return "pace";
+  if (/pilates/.test(l)) return "pilates";
+  if (/descanso|libre|rest/.test(l)) return "rest";
+  if (/maraton|42/.test(l)) return "marathon";
+  if (/media maraton|21/.test(l)) return "half";
+  if (/fuerza|strength|pesas|gym|gimnasio/.test(l)) return "strength";
+  if (/cross|bici|nadar|yoga|eliptica/.test(l)) return "cross";
+  if (/correr|run|trote|km|min/.test(l)) return "run";
+  return null;
+}
+
+function isComplete(tasks, done) {
+  return tasks.length > 0 && tasks.every(t => done[t.id] === "done" || done[t.id] === "missed");
+}
+
+function fmtRange(wi) {
+  const s = new Date(PLAN_START); s.setDate(s.getDate() + wi * 7);
+  const e = new Date(s); e.setDate(e.getDate() + 6);
+  const f = d => d.toLocaleDateString("es-CL", { day:"numeric", month:"short" });
+  return `${f(s)} – ${f(e)}`;
+}
+
+function App() {
+  const [plan, setPlan]       = useState(INITIAL_PLAN);
+  const [done, setDone]       = useState({});
+  const [activeW, setActiveW] = useState(CURRENT_WEEK - 1);
+  const [editing, setEditing] = useState(null);
+  const [editVal, setEditVal] = useState("");
+  const [status, setStatus]   = useState("loading");
+  const [dragOver, setDragOver] = useState(null);
+  const dragRef = useRef(null);
+  const timer   = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      const [sp, sd] = await Promise.all([dbGet("plan_stgo27"), dbGet("done_stgo27")]);
+      if (sp && sp.length === INITIAL_PLAN.length) setPlan(sp);
+      if (sd) setDone(sd);
+      setStatus("ready");
+    })();
+  }, []);
+
+  function save(np, nd) {
+    setStatus("saving");
+    clearTimeout(timer.current);
+    timer.current = setTimeout(async () => {
+      await Promise.all([dbSet("plan_stgo27", np), dbSet("done_stgo27", nd)]);
+      setStatus("saved");
+      setTimeout(() => setStatus("ready"), 2000);
+    }, 800);
+  }
+
+  function cycle(id) {
+    const cur = done[id];
+    const nxt = cur === "done" ? "missed" : cur === "missed" ? undefined : "done";
+    const nd = { ...done, [id]: nxt };
+    setDone(nd); save(plan, nd);
+  }
+
+  function del(wi, di, ti) {
+    const np = plan.map(w => w.map(d => [...d]));
+    np[wi][di].splice(ti, 1);
+    setPlan(np); save(np, done);
+  }
+
+  function add(wi, di) {
+    const id = `w${wi}d${di}c${Date.now()}`;
+    const np = plan.map(w => w.map(d => [...d]));
+    np[wi][di] = [...np[wi][di], { id, type:"run", label:"" }];
+    setPlan(np);
+    setEditing({ wi, di, ti: np[wi][di].length - 1 });
+    setEditVal("");
+  }
+
+  function commit(wi, di, ti) {
+    const label = editVal.trim();
+    const np = plan.map(w => w.map(d => d.map(t => ({ ...t }))));
+    if (!label) { np[wi][di].splice(ti, 1); }
+    else {
+      const dt = inferType(label);
+      np[wi][di][ti].label = label;
+      if (dt) np[wi][di][ti].type = dt;
+    }
+    setPlan(np); save(np, done); setEditing(null);
+  }
+
+  function onDragStart(wi, di, ti, ev) {
+    dragRef.current = { wi, di, ti };
+    ev.dataTransfer.effectAllowed = "move";
+    ev.currentTarget.style.opacity = "0.4";
+  }
+  function onDragEnd(ev) { ev.currentTarget.style.opacity = "1"; }
+  function onDrop(wi, di, ev) {
+    ev.preventDefault();
+    const src = dragRef.current;
+    setDragOver(null);
+    if (!src || (src.wi === wi && src.di === di)) return;
+    const np = plan.map(w => w.map(d => [...d]));
+    const [task] = np[src.wi][src.di].splice(src.ti, 1);
+    np[wi][di] = [...np[wi][di], task];
+    setPlan(np); save(np, done); dragRef.current = null;
+  }
+
+  /* ── Stats ── */
+  const today    = new Date();
+  const daysLeft = Math.max(0, Math.ceil((RACE_DATE - today) / 86400000));
+  const allT     = plan.flat(2);
+  const totalT   = allT.length;
+  const doneT    = allT.filter(t => done[t.id]==="done"||done[t.id]==="missed").length;
+  const pct      = totalT ? Math.round(doneT/totalT*100) : 0;
+  const wTasks   = (plan[activeW]||[]).flat();
+  const wDone    = wTasks.filter(t => done[t.id]==="done"||done[t.id]==="missed").length;
+  const wPct     = wTasks.length ? Math.round(wDone/wTasks.length*100) : 0;
+  const wksOk    = plan.filter(wk => isComplete(wk.flat(), done)).length;
+  const stLabel  = { loading:"Cargando…", saving:"Guardando…", saved:"✓ Guardado", ready:"" }[status];
+
+  if (status === "loading") return h("div", { style:{ padding:"60px", textAlign:"center", color:"var(--fg-3)" } },
+    h("div", { style:{ fontSize:40, marginBottom:16 } }, "🏁"),
+    h("div", null, "Cargando tu progreso…")
+  );
+
+  const tileData = [
+    { icon:"📆", val:`Semana ${CURRENT_WEEK}`, sub:fmtRange(CURRENT_WEEK-1), color:"var(--fire-b)" },
+    { icon:"✅", val:`${doneT} / ${totalT}`,   sub:"actividades",            color:"var(--green)" },
+    { icon:"🗓️", val:`${wksOk} / ${TOTAL_WEEKS}`, sub:"semanas ok",          color:"var(--fire-a)" },
+  ];
+
+  return h("div", { id:"app" },
+
+    /* HERO */
+    h("div", { className:"hero" },
+      h("div", { className:"hero-inner" },
+        h("div", { className:"hero-top" },
+          h("div", null,
+            h("div", { className:"hero-title" }, "Maratón de Santiago 2027"),
+            h("div", { className:"hero-sub" }, "Hal Higdon Novice 2 · 18 semanas · inicio 1 dic 2026")
+          ),
+          h("div", { className:"countdown-pill" },
+            h("div", { className:"countdown-num" }, daysLeft),
+            h("div", { className:"countdown-lbl" }, "días")
+          )
+        ),
+
+        h("div", { className:"tiles" },
+          tileData.map((td, i) =>
+            h("div", { key:i, className:"tile" },
+              h("div", { className:"tile-icon" }, td.icon),
+              h("div", { className:"tile-val", style:{ color:td.color } }, td.val),
+              h("div", { className:"tile-sub" }, td.sub)
+            )
+          )
+        ),
+
+        h("div", { className:"progress-wrap" },
+          h("div", { className:"progress-label" },
+            h("span", null, "Progreso total del plan"),
+            h("span", null, `${pct}%`)
+          ),
+          h("div", { className:"progress-track" },
+            h("div", { className:"progress-fill", style:{ width:`${pct}%`, background: pct===100 ? "var(--green)" : undefined } })
+          )
+        )
+      )
+    ),
+
+    /* WEEK SELECTOR */
+    h("div", { className:"week-selector" },
+      Array.from({ length: TOTAL_WEEKS }, (_, wi) => {
+        const wt   = (plan[wi]||[]).flat();
+        const full = isComplete(wt, done);
+        const isAct = wi === activeW;
+        const isCur = wi === CURRENT_WEEK - 1;
+        return h("button", {
+          key: wi,
+          className: `week-btn${isAct?" active":""}${full?" done":""}${isCur?" current":""}`,
+          onClick: () => setActiveW(wi),
+        }, `S${wi+1}${full?" ✓":isCur?" ●":""}`);
+      })
+    ),
+
+    /* WEEK PROGRESS ROW */
+    h("div", { className:"week-progress" },
+      h("div", { className:"week-progress-label" },
+        h("span", { className:"wk" }, `Semana ${activeW+1}`),
+        h("span", { className:"wr" }, fmtRange(activeW))
+      ),
+      h("div", { className:"week-progress-track" },
+        h("div", { style:{ width:`${wPct}%`, height:"100%", borderRadius:4, transition:"width 0.4s",
+          background: wPct===100 ? "var(--green)" : "linear-gradient(90deg,var(--fire-a),var(--fire-b))" } })
+      ),
+      h("span", { className:"week-progress-pct", style:{ color: wPct===100?"var(--green)":"var(--fg)" } }, `${wPct}%`)
+    ),
+
+    /* DAY GRID */
+    h("div", { className:"day-grid" },
+      DAYS.map((day, di) => {
+        const tasks   = (plan[activeW]&&plan[activeW][di]) ? plan[activeW][di] : [];
+        const dayDone = tasks.length > 0 && tasks.every(t => done[t.id]==="done"||done[t.id]==="missed");
+        const isOver  = dragOver?.wi===activeW && dragOver?.di===di;
+        const dayDate = new Date(PLAN_START);
+        dayDate.setDate(dayDate.getDate() + activeW*7 + di);
+
+        return h("div", {
+          key: di,
+          className: `day-col${dayDone?" done":""}${isOver?" drag-over":""}`,
+          onDragOver: ev => { ev.preventDefault(); setDragOver({ wi:activeW, di }); },
+          onDragLeave: ev => { if (!ev.currentTarget.contains(ev.relatedTarget)) setDragOver(null); },
+          onDrop: ev => onDrop(activeW, di, ev),
+        },
+          h("div", { className:"day-head" },
+            h("div", { className:`day-name${dayDone?" done":""}` }, `${day}${dayDone?" ✓":""}`),
+            h("div", { className:"day-date" }, `${dayDate.getDate()} ${dayDate.toLocaleDateString("es-CL",{month:"short"})}`)
+          ),
+
+          ...tasks.map((task, ti) => {
+            const cfg = TC[task.type] || TC.rest;
+            const st  = done[task.id];
+            const isEd = editing?.wi===activeW && editing?.di===di && editing?.ti===ti;
+            const cardBg = st==="done" ? "#ECFDF5" : st==="missed" ? "#FFFBEB" : cfg.bg;
+            const cardCl = st==="done" ? "#065F46" : st==="missed" ? "#C2410C" : cfg.cl;
+            const cardBo = st==="done" ? "#6EE7B7" : st==="missed" ? "#FDBA74" : cfg.bo;
+            const stIcon = st==="done" ? "✓" : st==="missed" ? "⚠" : "○";
+
+            return h("div", {
+              key: task.id,
+              className:"task",
+              draggable: !isEd,
+              onDragStart: !isEd ? ev => onDragStart(activeW,di,ti,ev) : undefined,
+              onDragEnd:   !isEd ? onDragEnd : undefined,
+              style: { background:cardBg, color:cardCl, borderColor:cardBo, cursor:isEd?"default":"grab" }
+            },
+              h("div", { className:"task-top" },
+                h("span", { className:"task-icon" }, cfg.ic),
+                h("span", { className:"task-status", onClick: () => cycle(task.id) }, stIcon)
+              ),
+              isEd
+                ? h("input", {
+                    autoFocus: true, value: editVal, placeholder:"Nombre…",
+                    onChange: ev => setEditVal(ev.target.value),
+                    onBlur: () => commit(activeW,di,ti),
+                    onKeyDown: ev => {
+                      if (ev.key==="Enter")  commit(activeW,di,ti);
+                      if (ev.key==="Escape") { if(!task.label) del(activeW,di,ti); setEditing(null); }
+                    },
+                    onClick: ev => ev.stopPropagation(),
+                  })
+                : h("div", { className:"task-body" },
+                    h("div", {
+                      className:`task-label${st==="missed"?" missed":""}`,
+                      onClick: () => { setEditVal(task.label); setEditing({ wi:activeW,di,ti }); }
+                    }, task.label),
+                    h("span", { className:"task-del", onClick: () => del(activeW,di,ti) }, "✕")
+                  )
+            );
+          }),
+
+          h("button", { className:"add-btn", onClick: () => add(activeW, di) }, "+")
+        );
+      })
+    ),
+
+    /* FOOTER */
+    h("div", { className:"footer-legend" },
+      Object.entries(TC).map(([k,v]) =>
+        h("span", { key:k, className:"legend-item" }, h("span",null,v.ic), h("span",null,v.lbl))
+      )
+    ),
+    h("p", { className:"footer-hint" }, "Arrastra para mover · Toca ○/✓/⚠ para cambiar estado · Toca el nombre para editar"),
+    h("p", { className:"footer-status", style:{ color: status==="saved" ? "var(--green)" : "var(--fg-3)" } }, stLabel)
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App, null));
+</script>
